@@ -4,6 +4,9 @@ class PostImage < ApplicationRecord
 
   # アソシエーション ( 1:N の「N」側 )
   belongs_to :user
+  # アソシエーション ( 1:N の「1」側 )
+  has_many :post_comments, dependent: :destroy
+  has_many :favorites, dependent: :destroy
 
   def get_image
     # 画像が添付されていない場合
@@ -15,6 +18,11 @@ class PostImage < ApplicationRecord
     end
     # 画像を返す
     image
+  end
+
+  def favorited_by?(user)
+    # 引数で渡されたユーザidがFavoritesテーブル内に存在していればtrue、していなければfalseを返す
+    favorites.exists?(user_id: user.id)
   end
 
 end

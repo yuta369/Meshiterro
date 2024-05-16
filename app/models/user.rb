@@ -9,6 +9,8 @@ class User < ApplicationRecord
 
   # アソシエーション ( 1:N の「1」側 )
   has_many :post_images, dependent: :destroy
+  has_many :post_comments, dependent: :destroy
+  has_many :favorites, dependent: :destroy
 
   has_one_attached :profile_image
 
