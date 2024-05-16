@@ -10,8 +10,11 @@ class PostImagesController < ApplicationController
     @post_image = PostImage.new(post_image_params)
     # 投稿データに今ログイン中のユーザーの ID を持たせる
     @post_image.user_id = current_user.id
-    @post_image.save
-    redirect_to post_images_path
+    if @post_image.save
+      redirect_to post_images_path
+    else # 投稿に不備があった場合
+      render :new # 投稿ページを再表示
+    end
   end
 
   def index

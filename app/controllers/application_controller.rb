@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  # ログイン認証されていなければ、ログイン画面へリダイレクトする [top以外]
+  before_action :authenticate_user!, except: [:top]
 
   # deviseのストロングパラメータの編集
   # devise利用の機能が使われる前にconfigure_permitted_parametersメソッドが実行
