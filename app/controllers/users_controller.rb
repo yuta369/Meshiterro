@@ -1,8 +1,9 @@
 class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
-    # 特定のユーザに関連付けられた投稿全てを取得し@post_imagesに渡す
-    @post_images = @user.post_images
+    # 特定のユーザに関連付けられた投稿の1ページ分の決められた数のデータだけを、
+    # 新しい順にを取得し@post_imagesに渡す
+    @post_images = @user.post_images.page(params[:page])
   end
 
   def edit

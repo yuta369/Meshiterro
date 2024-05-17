@@ -2,36 +2,108 @@
 <html>
   <head>
     <title>Meshiterro</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <!-- CSRF対策のためのメタタグを追加します -->
     <%= csrf_meta_tags %>
+    <!-- コンテンツセキュリティポリシーのメタタグを追加します -->
     <%= csp_meta_tag %>
-
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <!-- ビューポート設定で、ページがデバイスの幅に合わせて表示されるようにします -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- FontAwesomeのスクリプトを読み込みます -->
+    <script src="https://kit.fontawesome.com/xxxxxxxxxx.js" crossorigin="anonymous"></script>
+    <!-- アプリケーション用のスタイルシートを読み込みます -->
+    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <!-- アプリケーション用のJavaScriptを読み込みます -->
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body>
-    <header>
-      <!--ログイン済みならば true が、ログインしていなければ false -->
-      <% if user_signed_in? %> <!--ログイン済みの場合-->
-        <li>
-          <%= link_to '投稿フォーム', new_post_image_path %>
-        </li>
-        <li>
-          <%= link_to 'マイページ', user_path(current_user.id) %>
-        </li>
-        <li>
-          <%= link_to "ログアウト", destroy_user_session_path, method: :delete %>
-        </li>
-      <% else %> <!--ログインしていない場合-->
-        <li>
-          <%= link_to "新規登録", new_user_registration_path %>
-        </li>
-        <li>
-          <%= link_to "ログイン", new_user_session_path %>
-        </li>
-      <% end %>
+  <!--ページ全体を縦に並べるフレックスボックスにし、高さをブラウザの高さに設定-->
+  <body class="d-flex flex-column vh-100">
+    <!-- 小さな影がついたヘッダー -->
+    <header class="shadow-sm">
+      <!-- 画面サイズが大きいときにメニューが展開される、明るい背景色のナビゲーションバー -->
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <!-- コンテナでナビゲーションバーの幅を制限し、中央に配置 -->
+        <div class="container">
+          <!-- ロゴを表示するトップページへのリンク -->
+          <a class="navbar-brand p-3" href="/"><%= image_tag('logo.png') %></a>
+          <!-- モバイル表示時にナビゲーションメニューを折りたたむボタン -->
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <!-- ナビゲーションメニュー折りたたまれる部分 -->
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <!-- 右揃えのナビゲーションメニューのリスト -->
+            <ul class="navbar-nav ml-auto">
+            <!--ユーザーがログインしているかどうかを確認-->
+            <% if user_signed_in? %>
+              <!-- ログインしている場合のメニュー項目 -->
+              <li class="nav-item">
+                <!-- ログアウトリンク -->
+                <%= link_to "ログアウト", destroy_user_session_path, method: :delete, class: 'nav-link text-dark' %>
+              </li>
+              <li class="nav-item">
+                <!-- 投稿フォームへのリンク -->
+                <%= link_to '投稿フォーム', new_post_image_path, class: 'nav-link text-dark' %>
+              </li>
+              <li class="nav-item">
+                <!-- マイページへのリンク -->
+                <%= link_to 'マイページ', user_path(current_user.id), class: 'nav-link text-dark' %>
+              </li>
+            <% else %>
+              <!-- ログインしていない場合のメニュー項目 -->
+              <li class="nav-item">
+                <!-- 新規登録リンク -->
+                <%= link_to "新規登録", new_user_registration_path, class: 'nav-link text-dark' %>
+              </li>
+              <li class="nav-item">
+                <!-- ログインリンク -->
+                <%= link_to "ログイン", new_user_session_path, class: 'nav-link text-dark' %>
+              </li>
+            <% end %>
+            </ul>
+          </div>
+        </div>
+      </nav>
     </header>
-    <%= yield %>
+
+    <!-- フッターをページの下部に配置したメインコンテンツ -->
+    <main class="mb-auto">
+      <!-- 各ページの異なるコンテンツがここに挿入されます -->
+      <%= yield %>
+    </main>
+
+    <!-- 背景色を黒、テキストを白、上部と下部にパディングを追加したフッター -->
+    <footer class="bg-dark text-white pt-5 pb-4">
+      <!-- フッターコンテンツを中央に揃えるためのコンテナ -->
+      <div class="container">
+        <!-- カラム間のスペースをなくしたフッターの行 -->
+        <div class="row no-gutters">
+          <!-- フッター左側のカラム -->
+          <div class="col-md-4">
+            <!-- 説明文 -->
+            <p>善良な市民同士で無差別に食欲を煽るSNS</p>
+            <!-- 白いロゴ画像 -->
+            <%= image_tag('logo-white.png') %>
+          </div>
+          <!-- フッター右側のカラム -->
+          <div class="col-md-8">
+            <!-- フッターリンクの見出し -->
+            <h6 class="text-white mt-2 mb-3">Link</h6>
+            <!-- フッターリンクのリスト -->
+            <ul class="p-0 list-unstyled">
+              <li>
+                <!-- 会社概要へのリンク -->
+                <a href="" title="About" class="text-white-50">会社概要</a>
+              </li>
+              <li>
+                <!-- プライバシーポリシーへのリンク -->
+                <a href="" title="License informations" class="text-white-50">プライバシーポリシー</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
