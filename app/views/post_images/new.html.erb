@@ -1,30 +1,43 @@
+<!--ページの中央に配置され、左右にスペースが追加されたフォーム全体を包むコンテナ-->
 <div class="container">
+  <!--カラム間のスペースをなくした行を作成し、その中に複数の列を配置-->
   <div class="row no-gutters">
+    <!-- フォーム全体を囲む列 -->
     <div class="col-md-5 col-sm-10 mx-2 mx-sm-auto shadow-lg rounded px-0 my-5">
+      <!-- フォームのタイトル -->
       <h5 class="text-dark bg-light p-4 mb-0">画像投稿フォーム</h5>
       <div class="form-body p-4">
+        <!-- エラーメッセージの表示 -->
         <% if @post_image.errors.any? %>
           <ul class="alert alert-danger" role="alert">
             <h6 class="alert-heading">
               <%= @post_image.errors.count %>件のエラーが発生しました
             </h6>
+            <!-- 各エラーメッセージをリストとして表示 -->
             <% @post_image.errors.full_messages.each do |message| %>
               <li><%= message %></li>
             <% end %>
           </ul>
         <% end %>
+        <!-- フォームの開始 -->
         <%= form_with model: @post_image do |f| %>
+          <!-- 画像ファイルの選択フィールド -->
           <%= f.file_field :image, accept: "image/*", class: "w-100" %>
+          <!-- ショップ名入力フィールド -->
           <div class="input-group mb-3 mt-4">
             <div class="input-group-prepend">
+              <!-- ショップ名入力フィールドのアイコン -->
               <span class="input-group-text" aria-hidden="true"><i class="fas fa-building"></i></span>
             </div>
             <%= f.text_field :shop_name, class: "form-control", placeholder: "ショップ名" %>
           </div>
+          <!-- コメント入力フィールド -->
           <%= f.text_area :caption, class: "form-control", rows: "3", placeholder: "コメントここに" %>
           <hr>
+          <!-- 投稿ボタン -->
           <%= f.submit '投稿', class: "btn btn-lg btn-block btn-info mt-4" %>
         <% end %>
+        <!-- フォームの終了 -->
       </div>
     </div>
   </div>

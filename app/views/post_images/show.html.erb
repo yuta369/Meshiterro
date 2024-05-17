@@ -1,70 +1,67 @@
-<div>
-  <%= image_tag @post_image.get_image %>
-  <p>ショップ名：<%= @post_image.shop_name %></p>
-  <p>説明：<%= @post_image.caption %></p>
-  <p>投稿ユーザー画像：<%= image_tag @post_image.user.get_profile_image(100,100) %></p>
-  <p>ユーザーネーム：<%= @post_image.user.name %></p>
-  <!--年/月/日のフォーマットへ変換-->
-  <p>投稿日：<%= @post_image.created_at.strftime('%Y/%m/%d') %></p>
-  <!--もし、投稿者 == 現在ログインしているユーザ だったら-->
-  <% if @post_image.user == current_user %>
-    <!--削除を実行するためのリンク-->
-    <%= link_to "削除", post_image_path(@post_image), method: :delete %>
-  <% end %>
-  <% if @post_image.favorited_by?(current_user) %>
-    <p>
-      <!-- ユーザーがこの投稿画像をすでに「いいね」している場合 -->
-      <%= link_to post_image_favorite_path(@post_image), method: :delete do %>
-        <!-- ハートのアイコン（♥）と「いいね」の数を表示し、クリックで「いいね」を解除する -->
-        ♥<%= @post_image.favorites.count %> いいね
-      <% end %>
-    </p>
-  <% else %>
-    <p>
-      <!-- ユーザーがこの投稿画像をまだ「いいね」にしていない場合 -->
-      <%= link_to post_image_favorite_path(@post_image), method: :post do %>
-        <!-- ハートのアイコン（♡）と「いいね」の数を表示し、クリックで「いいね」に追加する -->
-        ♡<%= @post_image.favorites.count %> いいね
-      <% end %>
-    </p>
-  <% end %>
-</div>
-
-<div>
-
-  <!-- 投稿画像に対するコメントの総数を表示 -->
-  <p>コメント件数：<%= @post_image.post_comments.count %></p>
-  
-  <!-- 各コメントを順番に表示 -->
-  <% @post_image.post_comments.each do |post_comment| %>
-
-    <!-- コメントを書いたユーザーのプロフィール画像を表示 -->
-    <p><%= image_tag post_comment.user.get_profile_image(100,100) %></p>
-    
-    <!-- コメントを書いたユーザーの名前を表示 -->
-    <%= post_comment.user.name %>
-    
-    <!-- コメントが書かれた日付を表示 -->
-    <%= post_comment.created_at.strftime('%Y/%m/%d') %>
-    
-    <!-- コメントの内容を表示 -->
-    <%= post_comment.comment %>
-    
-    <% if post_comment.user == current_user %>
-      <%= link_to "削除", post_image_post_comment_path(post_comment.post_image, post_comment), method: :delete %>
-    <% end %>
-    
-  <% end %>
-  
-</div>
-
-<div>
-  <!-- 新しいコメントを投稿するためのフォーム -->
-  <%= form_with model: [@post_image, @post_comment] do |f| %>
-    <!-- コメントのテキストを入力するテキストエリア -->
-    <%= f.text_area :comment, rows: '5', placeholder: "コメントをここに" %>
-    
-    <!-- コメントを送信するためのボタン -->
-    <%= f.submit "送信する" %>
-  <% end %>
+<div class="post-detail py-5 bg-light">
+  <div class="container">
+    <div class="card mx-auto mt-4 shadow-lg">
+      <%= image_tag @post_image.get_image, class:"card-img-top" %>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-12 col-md-2">
+            <%= image_tag @post_image.user.get_profile_image(100, 100), class: "img-fluid rounded-circle" %>
+          </div>
+          <div class="col-sm-12 col-md-10">
+            <p class="card-title">
+              <%= link_to(post_image_path(@post_image.id), class:"text-dark") do %>
+                <strong><i class="fa-regular fa-flag"></i><span> <%= @post_image.shop_name %></span></strong>
+              <% end %>
+            </p>
+            <p class="card-title">説明：<%= @post_image.caption %></p>
+            <span><i class="fa-solid fa-user"></i> By <%= @post_image.user.name %> ｜ </span>
+            <span><i class="fa-solid fa-calendar-days"></i> <%= @post_image.created_at.strftime('%Y/%m/%d') %> ｜ </span>
+            <span><i class="fa-solid fa-comment"></i> <%= link_to "#{@post_image.post_comments.count}", post_image_path(@post_image.id), class:"text-dark" %> ｜ </span>
+            <% if @post_image.favorited_by?(current_user) %>
+              <span>
+                <%= link_to(post_image_favorite_path(@post_image), class:"text-dark", method: :delete) do %>
+                  <i class="fa-solid fa-heart"></i> <%= @post_image.favorites.count %>
+                <% end %>
+              </span>
+              <% else %>
+              <span>
+                <%= link_to(post_image_favorite_path(@post_image), class:"text-dark", method: :post) do %>
+                  <i class="fa-solid fa-heart"></i> <%= @post_image.favorites.count %>
+                <% end %>
+              </span>
+            <% end %>
+            <% if @post_image.user == current_user %>
+              <span> ｜ </span><%= link_to "削除", post_image_path(@post_image), class:"text-dark", method: :delete %>
+            <% end %>
+          </div>
+        </div>
+        <hr>
+        <div class="comments card-text">
+          <h4 class="mt-3"><%= @post_image.post_comments.count %>件コメント</h4>
+          <% @post_image.post_comments.each do |post_comment| %>
+            <div class="media border mb-3">
+              <%= image_tag post_comment.user.get_profile_image(100,100) %>
+              <div class="media-body ml-4 p-3">
+                <p><%= post_comment.created_at.strftime('%Y/%m/%d') %><%= post_comment.comment %></p>
+                <p><%= post_comment.comment %></p>
+                <% if post_comment.user == current_user %>
+                  <%= link_to "削除", post_image_post_comment_path(post_comment.post_image, post_comment), method: :delete, class: "btn btn-danger pull-right" %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        <hr>
+        <div class="new-comment card-text">
+          <%= form_with(model:[@post_image, @post_comment]) do |f| %>
+            <div class="form-group">
+              <label for="exampleFormControlTextarea1">コメントする</label>
+              <%= f.text_area :comment, rows:'5', class: "form-control",placeholder: "コメントをここに" %>
+            </div>
+            <%= f.submit "送信する", class:"btn btn-lg btn-info mt-2 float-right" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
